@@ -8,9 +8,9 @@ Set_A: comma seperated list of members of Set A (example - A1,A2,A3,...,A_n)
 Set_B: comma seperated list of members of Set B (example - B1,B2,B3,...,B_n)
 
 A_choice: comma seperated ordered choice list (in increasing order) over members of Set_B. The first element on each line is the member of set_A whose choices are being enumerated.
-example(
-A1,B2,B3,B7
-A2,B1,B9,B3
+example(\n
+A1,B2,B3,B7\n
+A2,B1,B9,B3\n
 .
 .
 )
