@@ -1,7 +1,7 @@
 Data Structures Needed
 ----------------------
-structure to represent a member of Set A
-structure to represent a member of Set B
+A member of Set A - string
+A member of Set B - string
 lists to represent Set_A, Set_B members
 structure to represent A_choice element
 	- Set A member, heap/priority queue representing choices
