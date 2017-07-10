@@ -51,5 +51,24 @@ B2,A1
 )  
 
 # Usage
-$python def-acp.py [path to input files]
+$python3 def-acp.py [path to input files]
 
+Data Structures
+----------------
+A member of Set A - string (example, 'A1')
+A member of Set B - string (example, 'B2')
+Set_A members - tuple of strings (example, ('A1','A2',...))
+Set_B members - tuple of strings (example, ('B1','B2',...))
+A_choice - 
+[
+('A1', heap[(1,'B2'),(2,'B3'),(3,'B7')]),
+.
+. 
+]
+B_choice - 
+[
+('B1', heap[(1,'A10'), (2,'A8')], 1),
+.
+.
+]
+ 
