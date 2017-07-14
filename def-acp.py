@@ -54,15 +54,17 @@ def create_choice_dicts(fname):
       i += 1
 
     if member_n is not None: 
-      choice_dict[member_0] = (h, member_n)
+      choice_dict[member_0] = [h, member_n]
     else:
-      choice_dict[member_0] = (h)
+      choice_dict[member_0] = [h]
 
   f.close()
 
   return choice_dict
 
 def main():
+
+  A_match = {}
 
   ###############################################################################
   # read in the input data from the files and create the global data structures #
@@ -78,14 +80,40 @@ def main():
   A_choice = create_choice_dicts(A_choice_fname)
   B_choice = create_choice_dicts(B_choice_fname)
 
-  
+  # The algo starts  
+  any_offers_made = True
+
   A_offers = defaultdict(list)
-  # for every member in B_choice, make 
-  for B_key,B_value in B_choice.items():
-    # populate the offer list for each candidate (number of candidates is specified at the end)
-    Set_A_list = heapq.nsmallest(B_value[1], B_value[0])
-    for mem in Set_A_list:
-      A_offers[mem[1]].append(B_key)
+  B_offers = defaultdict(list)
+
+  while any_offers_made = True
+    any_offers_made = False
+    # for every member in B_choice
+    for B_key,B_value in B_choice.items():
+      # populate the offer list for each candidate (number of candidates is specified at the end)
+      Set_A_list = heapq.nsmallest(B_value[1], B_value[0])
+
+      if Set_A_list is not None
+        any_offers_made = True
+
+      for mem in Set_A_list:
+        A_offers[mem[1]].append(B_key)
+        B_offers[B_key].append(mem[1])
+    
+    if any_offers_made = False
+      break
+    
+    # for each member in Set_A select its best choice as yet
+    for mem in Set_A
+      best_choice = heapq.heappop(A_choice[mem])
+      if best_choice is not None
+        if best_choice[1] is in A_offers[mem]
+          A_match[mem] = best_choice[1]
+          B_offers[best_choice[1]].delete(mem)
+        else
+          heapq.heappush(A_choice[mem], best_choice)
+    
+    # put the remaining members from B_offers back in B_choice 
 
   # test
   print("Set A") 
