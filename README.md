@@ -18,7 +18,7 @@ A2,B1,B9,B3
 B_choice: comma seperated ordered choice list (in increasing order) over members of Set_A. The first element on each line is the member of set_B whose choices are being enumerated. There is also an option for members of Set_B to choose more than one candidate from Set_A. That number is the last entry in the ordered list. No number implies a single choice.
 example(  
 B1,A3,A1,A10,A8,3  
-B2,A1,A4,A7,A2  
+B2,A1,A4,A7,A2,1
 B3,A3,A9,A18,A100,4  
 .  
 .  
@@ -61,13 +61,13 @@ Set_A members - tuple of strings (example, ('A1','A2',...))
 Set_B members - tuple of strings (example, ('B1','B2',...))
 A_choice - 
 [
-('A1', heap[(1,'B2'),(2,'B3'),(3,'B7')]),
+['A1', heap[(1,'B2'),(2,'B3'),(3,'B7')]],
 .
 . 
 ]
 B_choice - 
 [
-('B1', heap[(1,'A10'), (2,'A8')], 1),
+['B1', heap[(1,'A10'), (2,'A8')], 1],
 .
 .
 ]
