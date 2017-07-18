@@ -4,6 +4,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 import sys
+import time
 import heapq
 from collections import defaultdict
 
@@ -56,7 +57,7 @@ def create_choice_dicts(fname):
     if member_n is not None: 
       choice_dict[member_0] = [h, member_n]
     else:
-      choice_dict[member_0] = [h]
+      choice_dict[member_0] = h
 
   f.close()
 
@@ -73,17 +74,28 @@ def main():
 
   # create Set_A tuple
   Set_A = create_sets_AB(Set_A_fname)
+  print("Set_A")
+  print(Set_A)
 
   # create Set_B tuple
   Set_B = create_sets_AB(Set_B_fname)
+  print("Set_B")
+  print(Set_B)
 
   # create choice dictionaries
   # the key is a set_A member. The value is a list
   A_choice = create_choice_dicts(A_choice_fname)
+  print("A_choice")
+  print(A_choice)
+
   B_choice = create_choice_dicts(B_choice_fname)
+  print("B_choice")
+  print(B_choice)
+  print("\n")
 
   # The algo starts  
   any_offers_made = True
+  any_updates = True
 
   # holds the offers made "to" each member of Set_A
   A_offers = defaultdict(list)
@@ -91,17 +103,20 @@ def main():
   # holds the offers made "by" each member of Set_B
   B_offers = defaultdict(list)
 
+  iter = 1
   # the iterations start
-  while any_offers_made = True
+  while any_offers_made is True and any_updates is True:
+    time.sleep(2)
     any_offers_made = False
+    any_updates = False
+    print('# Iteration # - ', iter)
+    iter += 1
     # every member in B_choice makes offers
     for B_key,B_value in B_choice.items():
-      # populate the offer list for each candidate (number of candidates is specified at the end)
-      # grab the number of Set_A members that a Set_B member wants to offer (B_value[0])
-      Set_A_list = heapq.nsmallest(B_value[1], B_value[0])
+      Set_A_list = B_value[0]
 
       # if any Set_A member has been offered then the algo continues
-      if Set_A_list is not None
+      if Set_A_list is not None:
         any_offers_made = True
 
       # create A_offers and B_offers dictionaries based on the Set_A_list
@@ -110,60 +125,62 @@ def main():
         B_offers[B_key].append(mem)
    
     # if no offers were, then we can break out of the algo and accept the matches  
-    if any_offers_made = False
+    if any_offers_made is False:
       break
-    
+   
+    #print("A_offers")
+    #print(A_offers)
+
+    #print("B_offers")
+    #print(B_offers)
+ 
     # Now comes the matching part
-    # for each member in Set_A select its best choice as yet
-    for mem in Set_A # mem format: 'A1'
-      best_choice = heapq.heappop(A_choice[mem]) # best_choice format: (1,'B1')
-      # if the best choice still exists 
-      if best_choice is not None
-        # if the best choice is in the current offer iterations
-        if best_choice[1] is in A_offers[mem]
-          # update A_match
-          A_match[mem] = best_choice[1]
+    for mem_A in Set_A: # mem format: 'A1'
+     #print("A_offers:", A_offers[mem])
+     #print("A_choice[mem]:", A_choice[mem])
+     for choice_B in A_choice[mem_A]: # choice format: (1, 'B1')
+       #print("choice:",choice)
+       # if the choice is in the offers
+       if choice_B[1] in A_offers[mem_A]:
+         # check the ranking of the choice against the current match, update match if current choice is better
+         if (A_match.get(mem_A, None)) is None or (A_match.get(mem_A, None) is not None and A_match[mem_A][0] >  choice_B[0]):
+           A_match[mem_A] = choice_B
+           B_match[choice_B[1]].append(mem_A)
+           any_updates = True
+
+           # delete mem from B_choice for all Set_B members (not just the one who made the offer)
+           # as mem has accepted the offer (tentatively)
+           for mem_B in Set_B:
+             choice_A = B_choice[mem_B][0]
+             for item in choice_A:
+               if mem_A == item[1]:
+                 choice_A.remove(item)
+                 if mem_B == choice_B[1]: # but reduce the count only for the Set_B member whose offer was accepted
+                   B_choice[mem_B][1] -= 1
+
+         # we can break out of the loop here because the choice is the best choice (the way we iterate over A_choice[mem]
+         # is in ascending order of choice ranking)
+         break;
+ 
+    print("Current A_match")
+    print(A_match)
     
-          # delete the Set_A member from B_offers
-          B_offers[best_choice[1]].delete(mem)
-    
-          # update B_match
-          B_match[best_choice[1]].append(mem)      
-        else
-          # push back the best_choice back on the A_choice dictionary
-          heapq.heappush(A_choice[mem], best_choice)
-    
-    # put the remaining members from B_offers back in B_choice 
-    for key, val_list in B_offers:
-      for item in val_list
-        heapq.heappush(B_choice[key][0], item)
-      B_choice[key][1] = len(val_list)
+    print("Current B_match")
+    print(B_match)
 
-  # test
-  print("Set A") 
-  print(Set_A)
-  print("Set B") 
-  print(Set_B)
+    print("Current B_choice")
+    print(B_choice)
+    print("\n")
 
-  print("A_choice")
-  for keys, values in A_choice.items():
-    print(keys) 
-    print(values)
+  # when no more offers are made, the final state of A_match and B_match is the stable matching
+ 
+  print("################# Final Matching ###################\n") 
+  print("Final A_match")
+  print(A_match)
 
-  print("B_choice")
-  for keys, values in B_choice.items():
-    print(keys) 
-    print(values)
-
-  print("A_match")
-  for keys, values in A_match.items():
-    print(keys) 
-    print(values)
-
-  print("B_match")
-  for keys, values in B_match.items():
-    print(keys) 
-    print(values)
+  print("Final B_match")
+  print(B_match)
+  print("\n")
 
   sys.exit(0) 
 
