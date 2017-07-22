@@ -7,6 +7,7 @@ import sys
 import time
 import heapq
 from collections import defaultdict
+import argparse
 
 # file names
 Set_A_fname="Set_A"
@@ -72,6 +73,11 @@ def main():
   # read in the input data from the files and create the global data structures #
   ###############################################################################
 
+  # parse options
+  # option - location for input and output files
+  parser = argparse.ArgumentParser()
+  parser.parse_args()
+
   # create Set_A tuple
   Set_A = create_sets_AB(Set_A_fname)
   print("Set_A")
@@ -111,12 +117,10 @@ def main():
     any_updates = False
     print('# Iteration # - ', iter)
     iter += 1
-    # every member in B_choice makes offers
+    # every member in B_choice makes offers till it has got all candidates that it wanted
     for B_key,B_value in B_choice.items():
-      Set_A_list = B_value[0]
-
-      # if any Set_A member has been offered then the algo continues
-      if Set_A_list is not None:
+      if B_value[1] != 0:
+        Set_A_list = B_value[0]
         any_offers_made = True
 
       # create A_offers and B_offers dictionaries based on the Set_A_list
@@ -124,23 +128,23 @@ def main():
         A_offers[mem[1]].append(B_key)
         B_offers[B_key].append(mem)
    
-    # if no offers were, then we can break out of the algo and accept the matches  
+    # if no offers were, then we can break out of the iterations and accept the matches  
     if any_offers_made is False:
       break
    
-    #print("A_offers")
-    #print(A_offers)
+    print("A_offers")
+    pprint.pprint(A_offers)
 
-    #print("B_offers")
-    #print(B_offers)
+    print("B_offers")
+    pprint.pprint(B_offers)
  
     # Now comes the matching part
-    for mem_A in Set_A: # mem format: 'A1'
-     #print("A_offers:", A_offers[mem])
-     #print("A_choice[mem]:", A_choice[mem])
-     for choice_B in A_choice[mem_A]: # choice format: (1, 'B1')
-       #print("choice:",choice)
-       # if the choice is in the offers
+    for mem_A in Set_A: # mem_A format: 'A1'
+     #print("A_offers:", A_offers[mem_A])
+     #print("A_choice[mem_A]:", A_choice[mem_A])
+     for choice_B in A_choice[mem_A]: # choice_B format: (1, 'B1')
+       #print("choice_B:",choice_B)
+       # if choice_B is in the offers
        if choice_B[1] in A_offers[mem_A]:
          # check the ranking of the choice against the current match, update match if current choice is better
          if (A_match.get(mem_A, None)) is None or (A_match.get(mem_A, None) is not None and A_match[mem_A][0] >  choice_B[0]):
@@ -148,15 +152,16 @@ def main():
            B_match[choice_B[1]].append(mem_A)
            any_updates = True
 
-           # delete mem from B_choice for all Set_B members (not just the one who made the offer)
+           # delete mem_A from B_choice for all Set_B members (not just the one who made the offer)
            # as mem has accepted the offer (tentatively)
            for mem_B in Set_B:
              choice_A = B_choice[mem_B][0]
              for item in choice_A:
                if mem_A == item[1]:
                  choice_A.remove(item)
-                 if mem_B == choice_B[1]: # but reduce the count only for the Set_B member whose offer was accepted
-                   B_choice[mem_B][1] -= 1
+                 
+             if mem_B == choice_B[1]: # but reduce the count only for the Set_B member whose offer was accepted
+               B_choice[mem_B][1] -= 1
 
          # we can break out of the loop here because the choice is the best choice (the way we iterate over A_choice[mem]
          # is in ascending order of choice ranking)
