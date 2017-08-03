@@ -8,12 +8,15 @@ import time
 import heapq
 from collections import defaultdict
 import argparse
+import pprint
 
 # file names
 Set_A_fname="Set_A"
 Set_B_fname="Set_B"
 A_choice_fname="A_choice"
 B_choice_fname="B_choice"
+A_match_fname = "A_match"
+B_match_fname = "B_match"
 
 # global data structures
 Set_A = ()
@@ -76,25 +79,40 @@ def main():
   # parse options
   # option - location for input and output files
   parser = argparse.ArgumentParser()
-  parser.parse_args()
+  parser.add_argument("-i","--input", help="Absolute path to input files: Set_A, Set_B, A_choice, B_choice")
+  parser.add_argument("-o","--output", help="Absolute path to output files: A_match, B_match")
+  args = parser.parse_args()
+
+  input_path = ""
+  output_path = ""
+
+  if args.input is None:
+    input_path = "./"
+  else:
+    input_path = args.input + "/"
+
+  if args.output is None:
+    output_path = "./"
+  else:
+    output_path = args.output + "/"
 
   # create Set_A tuple
-  Set_A = create_sets_AB(Set_A_fname)
+  Set_A = create_sets_AB(input_path+Set_A_fname)
   print("Set_A")
   print(Set_A)
 
   # create Set_B tuple
-  Set_B = create_sets_AB(Set_B_fname)
+  Set_B = create_sets_AB(input_path+Set_B_fname)
   print("Set_B")
   print(Set_B)
 
   # create choice dictionaries
   # the key is a set_A member. The value is a list
-  A_choice = create_choice_dicts(A_choice_fname)
+  A_choice = create_choice_dicts(input_path+A_choice_fname)
   print("A_choice")
   print(A_choice)
 
-  B_choice = create_choice_dicts(B_choice_fname)
+  B_choice = create_choice_dicts(input_path+B_choice_fname)
   print("B_choice")
   print(B_choice)
   print("\n")
@@ -133,10 +151,10 @@ def main():
       break
    
     print("A_offers")
-    pprint.pprint(A_offers)
+    pprint.pprint(dict(A_offers))
 
     print("B_offers")
-    pprint.pprint(B_offers)
+    pprint.pprint(dict(B_offers))
  
     # Now comes the matching part
     for mem_A in Set_A: # mem_A format: 'A1'
@@ -168,24 +186,32 @@ def main():
          break;
  
     print("Current A_match")
-    print(A_match)
+    pprint.pprint(A_match)
     
     print("Current B_match")
-    print(B_match)
+    pprint.pprint(dict(B_match))
 
     print("Current B_choice")
-    print(B_choice)
+    pprint.pprint(B_choice)
     print("\n")
 
   # when no more offers are made, the final state of A_match and B_match is the stable matching
  
   print("################# Final Matching ###################\n") 
   print("Final A_match")
-  print(A_match)
+  pprint.pprint(A_match)
+
+  f = open(output_path+A_match_fname,"w")
+  f.write(str(A_match)+"\n")
+  f.close()
 
   print("Final B_match")
-  print(B_match)
+  pprint.pprint(dict(B_match))
   print("\n")
+
+  f = open(output_path+B_match_fname,"w")
+  f.write(str(dict(B_match))+"\n")
+  f.close() 
 
   sys.exit(0) 
 

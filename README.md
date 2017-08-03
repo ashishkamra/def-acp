@@ -51,7 +51,17 @@ B2,A1
 )  
 
 # Usage
-$python3 def-acp.py [path to input files]
+$def-acp.py [-i <absolute path to input file dir>] [-o <absolute path to output file dir>]
+
+Input files
+Set_A
+Set_B
+A_choice
+B_choice
+
+Output files
+A_match
+B_match
 
 Data Structures
 ----------------
