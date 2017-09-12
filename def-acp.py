@@ -162,8 +162,8 @@ def main():
      #print("A_choice[mem_A]:", A_choice[mem_A])
      for choice_B in A_choice[mem_A]: # choice_B format: (1, 'B1')
        #print("choice_B:",choice_B)
-       # if choice_B is in the offers
-       if choice_B[1] in A_offers[mem_A]:
+       # if choice_B is in the offers and still looking for candidates
+       if choice_B[1] in A_offers[mem_A] and B_choice[choice_B[1]][1] != 0:
          # check the ranking of the choice against the current match, update match if current choice is better
          if (A_match.get(mem_A, None)) is None or (A_match.get(mem_A, None) is not None and A_match[mem_A][0] >  choice_B[0]):
            A_match[mem_A] = choice_B
@@ -171,7 +171,7 @@ def main():
            any_updates = True
 
            # delete mem_A from B_choice for all Set_B members (not just the one who made the offer)
-           # as mem has accepted the offer (tentatively)
+           # as mem_A has accepted the offer (tentatively)
            for mem_B in Set_B:
              choice_A = B_choice[mem_B][0]
              for item in choice_A:
@@ -179,7 +179,8 @@ def main():
                  choice_A.remove(item)
                  
              if mem_B == choice_B[1]: # but reduce the count only for the Set_B member whose offer was accepted
-               B_choice[mem_B][1] -= 1
+               if B_choice[mem_B][1] != 0:	       
+                 B_choice[mem_B][1] -= 1
 
          # we can break out of the loop here because the choice is the best choice (the way we iterate over A_choice[mem]
          # is in ascending order of choice ranking)
